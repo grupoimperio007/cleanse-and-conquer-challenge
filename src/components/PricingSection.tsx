@@ -14,17 +14,24 @@ import {
   Gift,
   Star
 } from "lucide-react";
+import { useShopify } from "@/hooks/useShopify";
 import dtxTeaProduct from "@/assets/dtx-tea-product.png";
 import epureCapsProduct from "@/assets/epure-caps-product.png";
 
 export const PricingSection = () => {
-  const [isOrdering, setIsOrdering] = useState(false);
-
+  const { isLoading, buyNow } = useShopify();
+  
+  // ⚠️ IMPORTANTE: Reemplaza estos IDs con los reales de tu tienda Shopify
+  const DTX_COMBO_VARIANT_ID = 'gid://shopify/ProductVariant/XXXXXXXXXX';
+  
   const handleOrder = () => {
-    setIsOrdering(true);
-    // Aquí irá la integración con Shopify
-    console.log("Procesando orden...");
-    setTimeout(() => setIsOrdering(false), 2000);
+    // Verificar que el variant ID esté configurado
+    if (DTX_COMBO_VARIANT_ID === 'gid://shopify/ProductVariant/XXXXXXXXXX') {
+      alert('⚠️ CONFIGURACIÓN REQUERIDA:\n\n1. Ve a tu admin de Shopify\n2. Busca el producto "Reto DTX 30 Días"\n3. Copia el Variant ID\n4. Reemplázalo en el código\n\nConsulta las instrucciones en el componente PricingSection.tsx');
+      return;
+    }
+    
+    buyNow(DTX_COMBO_VARIANT_ID, 1);
   };
 
   return (
@@ -143,12 +150,12 @@ export const PricingSection = () => {
 
               <Button 
                 onClick={handleOrder}
-                disabled={isOrdering}
+                disabled={isLoading}
                 variant="secondary" 
                 size="lg" 
                 className="w-full text-lg font-bold py-4 shadow-lg hover:shadow-xl transition-all"
               >
-                {isOrdering ? (
+                {isLoading ? (
                   <>
                     <Zap className="w-5 h-5 mr-2 animate-spin" />
                     Procesando...
@@ -241,12 +248,12 @@ export const PricingSection = () => {
               </p>
               <Button 
                 onClick={handleOrder}
-                disabled={isOrdering}
+                disabled={isLoading}
                 variant="secondary" 
                 size="lg" 
                 className="text-xl px-12 py-4 font-bold shadow-lg hover:shadow-xl transition-all"
               >
-                {isOrdering ? "Procesando..." : "¡SÍ, QUIERO TRANSFORMAR MI SALUD!"}
+                {isLoading ? "Procesando..." : "¡SÍ, QUIERO TRANSFORMAR MI SALUD!"}
               </Button>
             </CardContent>
           </Card>
